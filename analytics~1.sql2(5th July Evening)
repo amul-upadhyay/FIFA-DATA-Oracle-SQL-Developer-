@@ -1,0 +1,373 @@
+--First the crime data is loaded and imported into the Oracle Sql developer tool.
+
+-- Counting number of rows
+select count(*) from fifa_data;
+
+-- Viewing all data
+SELECT * from fifa_data;
+
+--Describing the data
+DESC fifa_data;
+
+--Using Aliases
+
+SELECT Address  "The_Place_Where", Beat as "BEAT", Grid from crime_data;
+
+
+SELECT * FROM fifa_data;
+
+select count(*) from fifa_data;
+
+SELECT name, age, overall
+FROM fifa_data
+WHERE age >30
+ORDER BY age DESC;
+
+SELECT  host_name
+FROM    v$instance;
+
+
+select SERVICE_NAME from gv$session where sid in (
+select sid from V$MYSTAT);
+
+show user;
+
+select value from v$parameter where name= 'service_names';
+
+select name  as "Player_Nme" from fifa_data;
+
+SELECT * FROM fifa_data;
+
+SELECT name as player_name, age, potential, potential * 10 potential_10 from fifa_data;
+
+DESC fifa_data;
+
+SELECT DISTINCT name from fifa_data;
+
+
+SELECT name, position,
+name || ' Plays at ' || position || ' ' || 'Position'  AS "adasd"
+from fifa_data;
+
+select position from fifa_data;
+
+CREATE TABLE result(
+name VARCHAR(50),
+marks NUMBER
+);
+
+desc result;
+
+INSERT INTO result 
+VALUES ('amul', 60);
+
+
+SELECT * from result;
+
+---------------------------
+--Distinct and Not Equal To--
+----------------------------
+
+SELECT DISTINCT name, marks from result;
+
+SELECT * FROM result WHERE marks <> 30;
+
+SELECT * FROM result WHERE marks != 30;
+
+SELECT * from fifa_data;
+
+SELECT * FROM fifa_data 
+WHERE overall = 94;
+
+
+---------------------------
+--Between and IN Operat--
+----------------------------
+
+SELECT * FROM fifa_data 
+WHERE overall BETWEEN 90 and 94;
+
+SELECT * FROM fifa_data 
+WHERE overall IN (92,94,93);
+
+---------------------------
+--Wildcard and Underscore--
+----------------------------
+--Following query outputs the names that starts with 'R'
+SELECT name from fifa_data
+where name LIKE 'R%';
+
+--Following query outputs the names that ends with 'i'
+SELECT name from fifa_data
+where name LIKE '%i';
+
+--Following query outputs the names that have 'z' in them
+SELECT name from fifa_data
+where name LIKE '%z%';
+
+
+--Following Query will list the names that starts with 'R' and followed by 4 underscores
+--Meaning 4 chracters
+
+SELECT name FROM fifa_data
+WHERE name LIKE 'R____';
+
+
+
+SELECT * FROM fifa_data
+WHERE wage is null;
+
+
+----------------------------
+-----------Sorting----------
+----------------------------
+--Sort by column aliases
+SELECT name AS "Player Name", club, potential,jersey_number  from fifa_data
+WHERE jersey_number in (21,23,25) and preferred_foot = 'Left'
+ORDER by "Player Name" DESC;
+
+--Sort by computed column aliases
+SELECT name, club, potential, potential * 100 AS "great potential"  from fifa_data
+WHERE jersey_number in (21,23,25) and preferred_foot = 'Left'
+ORDER by "great potential" DESC;
+
+
+--Sort by multiple columns
+SELECT name, club, potential,jersey_number  from fifa_data
+WHERE jersey_number in (21,23,25) and preferred_foot = 'Left'
+ORDER by name, potential DESC;
+
+
+----------------------------
+-----Case Manipulation------
+----------------------------
+
+--Making all Uppercase
+SELECT first_name, UPPER(first_name) from HR.employees;
+
+--Making all Lower
+SELECT first_name, LOWER(first_name) from HR.employees;
+
+--Making First Capital
+SELECT email, INITCAP(email) from HR.employees;
+
+
+
+----------------------------
+--Characterr Manipulation---
+----------------------------
+
+SELECT concat(first_name, last_name) from HR.employees;
+
+SELECT substr(first_name,1,5) from HR.employees;
+
+SELECT first_name, length(first_name) from HR.employees;
+
+SELECT INSTR('AwAeeeeA', 'A') from dual;
+
+SELECT first_name FROM HR.employees;
+
+SELECT LPAD(first_name, 20, '$') from HR.employees;
+
+SELECT RPAD(first_name, 10, '#') from HR.employees;
+    
+    
+SELECT round(123.5, 0) from dual;
+    
+SELECT trunc(123.65, 0) FROM dual;    
+ 
+
+--Oracle Date Format DD-MON-YY
+
+--Oracle has a date format that it follows to store dates and that is
+--02-Aug-67
+
+--To convert a string to date format just use the date function and specify its date type 
+--'TO_DATE' function will convert it to oracles date format
+
+SELECT hire_date from HR.employees; 
+
+SELECT TO_DATE('25+08+1967', 'DD/MM/YYYY') from dual;
+--25-AUG-67
+
+SELECT TO_DATE('25)08)1967', 'DD/MM/YYYY') from dual;
+--25-AUG-67
+
+SELECT TO_DATE('25@08@1967', 'DD/MM/YYYY') from dual;
+--25-AUG-67
+
+SELECT date_of_hire from hr_data;
+ 
+SELECT date_of_hire, TO_DATE(date_of_hire, 'MM/DD/YYYY') "New Date" from hr_data;
+ 
+desc hr_data;
+
+SELECT to_number('12345') from dual;
+ 
+desc HR.employees;
+
+SELECT  to_char(SYSDATE, 'DD-MM-YYYY HH:MI:SS') from dual;
+
+SELECT sysdate-2 from dual;
+
+SELECT hire_date, hire_date+3 from HR.employees;
+
+----------------------------
+--CASE & DECODE Functions---
+----------------------------
+
+SELECT  TO_CHAR(sysdate +2/24, 'DD-MM-YY HH:MI:SS') from dual;
+
+    DESCR HR.employees;
+    
+    SELECT first_name, salary, job_id,
+    
+    CASE job_id     WHEN 'AD_PRES' THEN (1.15*Salary)
+                    WHEN 'AD_VP' THEN (1.25 * Salary)
+                    WHEN 'FI_ACCOUNT' THEN(1.35* Salary)
+                    ELSE salary
+    END AS "Revised Salary"
+    FROM HR.employees;
+
+SELECT * FROM HR.employees;
+
+
+SELECT
+first_name, job_id, salary,
+DECODE(job_id, 'AD_PRES', 1.15 * salary,
+                'AD_VP', 1.25 * salary,
+                'FI_ACCOUNT', 1.35 * salary,
+                salary) AS "REVISED SALARY"
+FROM HR.employees;
+
+DESC HR.employees;
+
+--Hear We have commission_pct NULL for some entries 
+--and doing any arithematic operations with NULL results in NULL
+--Hence the query below results in Null entries in new 'YEARLY_INCOME' column
+
+SELECT first_name, job_id, salary, commission_pct, 
+(salary * 12) + (salary * 12 * commission_pct) AS "YEARLY INCOME"
+from HR.employees;
+
+--To remedy this NVL function is used that substitutes a value if a value is found NULL
+--NVL(column_name, expression)
+
+
+SELECT first_name, job_id, salary, commission_pct, 
+(salary * 12) + (salary * 12 * NVL(commission_pct, 0)) AS "YEARLY INCOEM"
+from HR.employees;
+
+--NVL2 can also be used  that substitutes either of two values if a value is found NULL
+--NVL(column_name, expression when not NULL, espression when NULL)
+
+SELECT first_name, job_id, salary, commission_pct, 
+NVL2(commission_pct, 'Salary With Commission', 'Salary Without Commission') AS "YEARLY INCOEM"
+from HR.employees;
+
+
+--NULLIF can also be used to resolve NILL problem
+--NULLIF(Expression 1, Expression 2)
+-- If Expression 1 is equal to Expression 2 it returns NULL else retuens the Expresion 1
+
+SELECT first_name,
+last_name,
+length(first_name), 
+length(last_name),
+NULLIF(length(first_name),length(last_name)) AS COMPARISON
+FROM HR.employees;
+
+--COALESCE function is very useful and it can take as many parameters you wish
+--and return the one it finds
+--For Example if you have Telephone_Number, Home_Number and Mobile_Number fields and you write
+-- COALESCE(Telephone_Number, Home_Number,Mobile_Number) 
+-- It will return the one it finds and if found Null return the next one and so on
+
+
+CREATE TABLE dummy(
+add1 VARCHAR(40),
+add2 VARCHAR(40),
+add3 VARCHAR(40)
+);
+
+SELECT * FROM dummy;
+INSERT INTO dummy values('','2nd Address','3rd Address');
+INSERT INTO dummy values('','','3rd Address');
+INSERT INTO dummy values('1st Address','2nd Address','3rd Address');
+
+SELECT COALESCE(add1,add2,add3) FROM dummy;
+
+
+----------------------------
+------Group functions-------
+----------------------------
+
+
+SELECT AVG(salary) FROM HR.employees;
+
+SELECT MIN(salary) FROM HR.employees;
+
+SELECT MAX(salary) FROM HR.employees;
+
+SELECT STDDEV(salary) FROM HR.employees;
+
+SELECT VARIANCE(salary) FROM HR.employees;
+
+SELECT SUM(salary) FROM HR.employees;
+
+----------------------------
+--NULL data & Group functions--
+----------------------------
+
+SELECT commission_pct from HR.employees;
+
+SELECT AVG(commission_pct) from HR.employees;
+
+SELECT AVG(NVL(commission_pct,0)) from HR.employees; 
+
+SELECT COUNT(commission_pct) FROM HR.employees;
+
+SELECT COUNT(NVL(commission_pct,0)) FROM HR.employees;
+
+SELECT commission_pct FROM HR.employees WHERE commission_pct is NULL; 
+
+SELECT DISTINCT commission_pct from HR.employees;
+
+----------------------------
+-----Group By functions-----
+----------------------------
+SELECT * FROM HR.employees;
+
+SELECT department_id, SUM(salary) AS "SUM Of Salary" from HR.employees
+ WHERE hire_date > '01-Jan-05'
+GROUP BY department_id ORDER BY department_id;
+
+
+SELECT * FROM HR.employees WHERE hire_date > '01-Jan-05';
+
+SELECT department_id, COUNT(*) 
+from HR.employees
+GROUP BY department_id ORDER BY department_id;
+
+
+SELECT department_id, SUM(salary) 
+from HR.employees
+GROUP BY department_id
+HAVING sum(salary) > 8000;
+
+SELECT * FROM crime_data;
+
+SELECT COUNT(GRID) AS "TIMES", GRID from crime_data 
+GROUP BY GRID 
+HAVING GRID>1000 ORDER BY TIMES DESC;
+
+DESC crime_data;
+
+SELECT * FROM crime_data where address is null;
+
+
+--Cross Join or Cartesian Product
+
+SELECT * FROM HR.employees;
+
+SELECT * FROM HR.departments;
